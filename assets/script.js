@@ -2,11 +2,11 @@ document.getElementById('shortenBtn').addEventListener('click', async () => {
     const fullUrl = document.getElementById('fullUrl').value;
     const resultDiv = document.getElementById('result');
     const shortenedLink = document.getElementById('shortenedLink');
-    
+
     // Define a URL base em uma variável
     // Ajuste esta URL para a que você estiver usando (local ou Vercel)
-    const baseUrl = 'https://encurtador-blush.vercel.app';
-    const api_url = `${baseUrl}/api/shorten`; 
+    const baseUrl = 'https://devcix.tech';
+    const api_url = `${baseUrl}/api/shorten`;
 
     try {
         const response = await fetch(api_url, {
