@@ -2,9 +2,10 @@ document.getElementById('shortenBtn').addEventListener('click', async () => {
     const fullUrl = document.getElementById('fullUrl').value;
     const resultDiv = document.getElementById('result');
     const shortenedLink = document.getElementById('shortenedLink');
-    
-    // Mude esta URL quando você hospedar na Vercel (ex: https://encurta.devcix.tech/api/shorten)
-    const api_url = 'http://localhost:3000/api/shorten'; 
+
+    // Define a URL base em uma variável
+    const baseUrl = 'https://encurtador-blush.vercel.app';
+    const api_url = `${baseUrl}/api/shorten`;
 
     try {
         const response = await fetch(api_url, {
@@ -18,8 +19,8 @@ document.getElementById('shortenBtn').addEventListener('click', async () => {
         const data = await response.json();
 
         if (response.ok) {
-            shortenedLink.href = `http://localhost:3000/${data.shortUrl}`; // Mude esta URL também
-            shortenedLink.textContent = `http://localhost:3000/${data.shortUrl}`; // Mude esta URL também
+            shortenedLink.href = `${baseUrl}/${data.shortUrl}`;
+            shortenedLink.textContent = `${baseUrl}/${data.shortUrl}`;
             resultDiv.classList.remove('hidden');
         } else {
             alert(data.error || 'Ocorreu um erro.');

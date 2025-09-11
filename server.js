@@ -5,6 +5,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const shortid = require('shortid');
 const dotenv = require('dotenv');
+const cors = require('cors');
 
 // Carrega as variáveis do arquivo .env
 dotenv.config();
@@ -34,6 +35,9 @@ const Url = mongoose.model('Url', urlSchema);
 
 // Middleware para processar requisições JSON
 app.use(express.json());
+
+// Habilita CORS para permitir requisições do frontend
+app.use(cors());
 
 // Rota para encurtar um link
 app.post('/api/shorten', async (req, res) => {
