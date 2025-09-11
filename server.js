@@ -1,0 +1,73 @@
+// server.js
+
+// Importa as bibliotecas que vamos usar
+const express = require('express');
+const mongoose = require('mongoose');
+const shortid = require('shortid');
+const dotenv = require('dotenv');
+
+// Carrega as variáveis do arquivo .env
+dotenv.config();
+
+// Inicializa o app
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Conecta ao banco de dados
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log('MongoDB conectado!'))
+    .catch(err => console.error(err));
+
+// Configura o shortid para gerar códigos de 5 caracteres sem caracteres especiais
+// const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+// shortid.characters(alphabet);
+
+// Define o modelo do nosso link
+const urlSchema = new mongoose.Schema({
+    fullUrl: { type: String, required: true },
+    shortUrl: { type: String, required: true, default: () => shortid.generate().substring(0, 5) },
+    createdAt: { type: Date, default: Date.now, expires: 7200 } // 7200 segundos = 2 horas
+});
+
+
+const Url = mongoose.model('Url', urlSchema);
+
+// Middleware para processar requisições JSON
+app.use(express.json());
+
+// Rota para encurtar um link
+app.post('/api/shorten', async (req, res) => {
+    const { fullUrl } = req.body;
+
+    if (!fullUrl) {
+        return res.status(400).json({ error: 'URL completa é necessária.' });
+    }
+
+    try {
+        const newUrl = new Url({ fullUrl });
+        await newUrl.save();
+        res.json({ shortUrl: newUrl.shortUrl });
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao encurtar o link.' });
+    }
+});
+
+// Rota para redirecionar
+app.get('/:shortUrl', async (req, res) => {
+    const { shortUrl } = req.params;
+
+    try {
+        const url = await Url.findOne({ shortUrl });
+
+        if (url) {
+            return res.redirect(url.fullUrl);
+        } else {
+            return res.status(404).send('Link não encontrado ou expirado.');
+        }
+    } catch (error) {
+        res.status(500).send('Erro no servidor.');
+    }
+});
+
+// Inicia o servidor
+app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
