@@ -1,6 +1,3 @@
-// server.js
-
-// Importa as bibliotecas que vamos usar
 const express = require('express');
 const mongoose = require('mongoose');
 const shortid = require('shortid');
