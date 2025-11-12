@@ -20,7 +20,7 @@ mongoose.connect(process.env.MONGO_URI)
 // const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 // shortid.characters(alphabet);
 
-// Define o modelo do nosso link
+// Define o modelo do link
 const urlSchema = new mongoose.Schema({
     fullUrl: { type: String, required: true },
     shortUrl: { type: String, required: true, default: () => shortid.generate().substring(0, 5) },
